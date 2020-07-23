@@ -5,6 +5,7 @@ import com.google.api.services.drive.model.File
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -19,5 +20,10 @@ class DriveEndpoint(val googleDriveClient: GoogleDriveClient) {
     fun createFile(): ResponseEntity<String> {
         googleDriveClient.addFile()
         return ResponseEntity.ok("success")
+    }
+
+    @GetMapping("/{fileId}")
+    fun createFile(@PathVariable fileId: String): ResponseEntity<String> {
+        return ResponseEntity.ok(googleDriveClient.getFile(fileId))
     }
 }

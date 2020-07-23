@@ -1,59 +1,62 @@
 package com.emotionstracker.api.importer.googledrive
 
+import com.emotionstracker.api.logging.LoggerUtil
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.FileContent
-import com.google.api.client.json.JsonFactory
-import com.google.api.client.json.jackson2.JacksonFactory
-import com.google.api.services.drive.Drive
+import com.google.api.client.http.javanet.NetHttpTransport
 import com.google.api.services.drive.model.File
 import com.google.api.services.drive.model.FileList
 import org.springframework.stereotype.Service
+import java.io.BufferedReader
 
 
 @Service
-class GoogleDriveClient(val googleDriveAuthProvider: GoogleDriveAuthProvider) {
+class GoogleDriveClient(val googleDriveService: GoogleDriveService) {
 
-    private val APPLICATION_NAME: String = "Emotions Tracker API"
-    private val JSON_FACTORY: JsonFactory = JacksonFactory.getDefaultInstance()
+    companion object {
+        val log = LoggerUtil.logger(GoogleDriveClient.javaClass)
+    }
 
     fun listFiles(): List<File> {
-        val HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport()
-        val service = Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, googleDriveAuthProvider.getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
-                .build()
-
-        // Print the names and IDs for up to 10 files.
-        val result: FileList = service.files().list()
+        val drive = googleDriveService.getDrive(newHttpTransport())
+        val result: FileList = drive.files().list()
                 .setPageSize(10)
                 .setFields("nextPageToken, files(id, name)")
                 .execute()
         val files: List<File> = result.files
         if (files.isEmpty()) {
-            println("No files found.")
+            log.info("No files found.")
         } else {
-            println("Files:")
-            files.forEach { System.out.printf("%s (%s)\n", it.name, it.id) }
+            log.info("Files:")
+            files.forEach { log.info("${it.name} (${it.id})") }
         }
-
         return files
     }
 
-    fun addFile() {
-        val HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport()
-        val service = Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, googleDriveAuthProvider.getCredentials(HTTP_TRANSPORT))
-                .setApplicationName(APPLICATION_NAME)
-                .build()
+    fun getFile(fileId: String): String {
+        val drive = googleDriveService.getDrive(newHttpTransport())
+        val result = drive.files().get(fileId).set("alt", "media").executeAsInputStream()
+        val reader = BufferedReader(result.reader())
+        val text = reader.readText()
+        reader.close()
+        log.info("Downloaded file with content: $text")
+        return text
+    }
 
+    // TODO remove method after testing Google Drive API
+    fun addFile() {
         val resource = GoogleDriveClient::class.java.getResource("/mskrzypek97__at__gmail__com-12072020.csv")
         val filePath = java.io.File(resource.file)
         val mediaContent = FileContent("text/csv", filePath)
 
         val fileMetadata = File()
-        fileMetadata.name = "lol.csv"
+        fileMetadata.name = "test2.csv"
+        val drive = googleDriveService.getDrive(newHttpTransport())
 
-        val file: File = service.files().create(fileMetadata, mediaContent)
-                .setFields("id")
+        val file: File = drive.files().create(fileMetadata, mediaContent)
                 .execute()
-        println("File ID: " + file.id)
+        log.info("File ID: ${file.id}")
     }
+
+    private fun newHttpTransport(): NetHttpTransport = GoogleNetHttpTransport.newTrustedTransport()
 }

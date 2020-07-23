@@ -12,21 +12,22 @@ import java.io.InputStream
 
 
 @Service
-class GoogleDriveAuthProvider {
+class GoogleDriveCredentialsProvider {
 
-    /**
-     * Global instance of the scopes required by this quickstart.
-     * If modifying these scopes, delete your previously saved tokens/ folder.
-     */
-    private val scopes = listOf(DriveScopes.DRIVE)
+    // TODO change scope to READ_ONLY after testing Google Drive API
+    private val credentialsScope = listOf(DriveScopes.DRIVE)
     private val credentialsFilePath = "/credentials.json"
 
-    fun getCredentials(HTTP_TRANSPORT: NetHttpTransport): Credential =
+    fun provideCredentials(httpTransport: NetHttpTransport): Credential =
             GoogleCredential
-                    .fromStream(credentialsInputStream(), HTTP_TRANSPORT, JacksonFactory.getDefaultInstance())
-                    .createScoped(scopes)
+                    .fromStream(
+                            credentialsAsInputStream(),
+                            httpTransport,
+                            JacksonFactory.getDefaultInstance()
+                    )
+                    .createScoped(credentialsScope)
 
     @Throws(IOException::class)
-    private fun credentialsInputStream(): InputStream = GoogleDriveAuthProvider::class.java.getResourceAsStream(credentialsFilePath)
+    private fun credentialsAsInputStream(): InputStream = GoogleDriveCredentialsProvider::class.java.getResourceAsStream(credentialsFilePath)
             ?: throw FileNotFoundException("Resource not found: $credentialsFilePath")
 }
