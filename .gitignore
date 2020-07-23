@@ -32,3 +32,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### ET ###
+/src/main/resources/credentials.json
