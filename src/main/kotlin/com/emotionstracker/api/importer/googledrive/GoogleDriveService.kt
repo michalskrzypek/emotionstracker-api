@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service
 @Service
 class GoogleDriveService(val googleDriveCredentialsProvider: GoogleDriveCredentialsProvider) {
 
-    @Value("\${spring.application.name}")
+    @Value("\${googledrive.application.name}")
     private lateinit var applicationName: String
 
     private val jsonFactory: JsonFactory = JacksonFactory.getDefaultInstance()
