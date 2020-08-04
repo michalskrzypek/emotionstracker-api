@@ -3,6 +3,7 @@ package com.emotionstracker.api.domain
 import java.time.LocalDate
 import javax.persistence.*
 
+@Entity
 data class EmotionRecord(
         val count: Long,
         val date: LocalDate,

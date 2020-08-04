@@ -11,9 +11,8 @@ import com.google.api.services.drive.model.FileList
 import org.springframework.stereotype.Service
 import java.io.BufferedReader
 
-
 @Service
-class GoogleDriveClient(val googleDriveService: GoogleDriveService) {
+class GoogleDriveClient(private val googleDriveService: GoogleDriveService) {
 
     companion object {
         val log = LoggerUtil.logger(GoogleDriveClient.javaClass)
@@ -22,7 +21,6 @@ class GoogleDriveClient(val googleDriveService: GoogleDriveService) {
     fun listFiles(): List<File> {
         val drive = googleDriveService.getDrive(newHttpTransport())
         val result: FileList = drive.files().list()
-                .setPageSize(10)
                 .setFields("nextPageToken, files(id, name)")
                 .execute()
         val files: List<File> = result.files
@@ -35,7 +33,7 @@ class GoogleDriveClient(val googleDriveService: GoogleDriveService) {
         return files
     }
 
-    fun getFile(fileId: String): String {
+    fun getFile(fileId: String): Csv {
         val drive = googleDriveService.getDrive(newHttpTransport())
         val result = drive.files().get(fileId).set("alt", "media").executeAsInputStream()
         val reader = BufferedReader(result.reader())
@@ -48,7 +46,7 @@ class GoogleDriveClient(val googleDriveService: GoogleDriveService) {
             line = reader.readLine()
         }
         reader.close()
-        return csv.toString()
+        return csv
     }
 
     // TODO remove method after testing Google Drive API

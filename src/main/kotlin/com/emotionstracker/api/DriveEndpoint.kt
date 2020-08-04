@@ -24,6 +24,6 @@ class DriveEndpoint(val googleDriveClient: GoogleDriveClient) {
 
     @GetMapping("/{fileId}")
     fun createFile(@PathVariable fileId: String): ResponseEntity<String> {
-        return ResponseEntity.ok(googleDriveClient.getFile(fileId))
+        return ResponseEntity.ok(googleDriveClient.getFile(fileId).toString())
     }
 }

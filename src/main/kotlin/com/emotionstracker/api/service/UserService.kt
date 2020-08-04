@@ -6,7 +6,9 @@ import com.emotionstracker.api.repository.UserRepository
 import org.springframework.stereotype.Service
 
 @Service
-class UserService(val userRepository: UserRepository) {
+class UserService(private val userRepository: UserRepository) {
 
     fun getByEmail(email: String): User = userRepository.findByEmail(email) ?: throw UserNotFoundException(email)
+    fun save(user: User): User = userRepository.save(user)
+
 }

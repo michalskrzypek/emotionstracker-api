@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 @Service
-class GoogleDriveService(val googleDriveCredentialsProvider: GoogleDriveCredentialsProvider) {
+class GoogleDriveService(private val googleDriveCredentialsProvider: GoogleDriveCredentialsProvider) {
 
     @Value("\${googledrive.application.name}")
     private lateinit var applicationName: String
