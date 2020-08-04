@@ -1,5 +1,7 @@
 package com.emotionstracker.api.importer.googledrive
 
+import com.emotionstracker.api.importer.csv.Csv
+import com.emotionstracker.api.importer.csv.CsvRow
 import com.emotionstracker.api.logging.LoggerUtil
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.FileContent
@@ -37,10 +39,16 @@ class GoogleDriveClient(val googleDriveService: GoogleDriveService) {
         val drive = googleDriveService.getDrive(newHttpTransport())
         val result = drive.files().get(fileId).set("alt", "media").executeAsInputStream()
         val reader = BufferedReader(result.reader())
-        val text = reader.readText()
+        var line = reader.readLine()
+        var csv = Csv()
+        while (line != null) {
+            log.info(line)
+            val row = CsvRow(line)
+            csv.add(row)
+            line = reader.readLine()
+        }
         reader.close()
-        log.info("Downloaded file with content: $text")
-        return text
+        return csv.toString()
     }
 
     // TODO remove method after testing Google Drive API

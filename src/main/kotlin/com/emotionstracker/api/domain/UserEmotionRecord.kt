@@ -3,7 +3,7 @@ package com.emotionstracker.api.domain
 import java.time.LocalDate
 import javax.persistence.*
 
-data class Emotion(
+data class UserEmotionRecord(
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long,
