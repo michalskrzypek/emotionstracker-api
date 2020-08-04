@@ -8,12 +8,12 @@ data class CsvRow(val values: List<String>) {
         const val CSV_DELIMITER = ","
     }
 
-    fun getValue(index: Int): String? {
-        var value: String? = null
-        if (values.size > index) {
-            value = values[index]
+    @Throws(IllegalArgumentException::class)
+    fun getValue(index: Int): String {
+        if (index >= values.size) {
+            throw IllegalArgumentException("$index is greater than the max index (${this.values.size - 1}) of $this")
         }
-        return value
+        return values[index]
     }
 
     override fun toString(): String {

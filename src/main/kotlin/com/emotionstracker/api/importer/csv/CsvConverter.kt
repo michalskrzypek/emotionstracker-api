@@ -1,12 +1,15 @@
 package com.emotionstracker.api.importer.csv
 
-interface CsvConverter<T> {
+import com.emotionstracker.api.exceptions.InvalidCsvException
+
+abstract class CsvConverter<T> {
 
     fun convertIfApplies(csv: Csv): List<T> = if (applies(csv)) convert(csv) else listOf()
 
-    fun applies(csv: Csv): Boolean = getHeaders() == csv.getHeaders().toString()
+    private fun applies(csv: Csv): Boolean = getHeaders() == csv.getHeaders().toString()
 
-    fun convert(csv: Csv): List<T>
+    @Throws(InvalidCsvException::class)
+    protected abstract fun convert(csv: Csv): List<T>
 
-    fun getHeaders(): String
+    protected abstract fun getHeaders(): String
 }
