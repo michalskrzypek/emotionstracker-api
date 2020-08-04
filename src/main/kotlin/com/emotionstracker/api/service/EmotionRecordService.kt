@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service
 class EmotionRecordService(val emotionRecordRepository: EmotionRecordRepository, val userService: UserService) {
 
     fun save(emotionRecord: EmotionRecord) = emotionRecordRepository.save(emotionRecord)
+
     fun getAllForUser(email: String): List<EmotionRecord> {
         val user = userService.getByEmail(email)
         return emotionRecordRepository.findAllByUser(user)

@@ -1,4 +1,4 @@
-package com.emotionstracker.api
+package com.emotionstracker.api.endpoints
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

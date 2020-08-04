@@ -1,4 +1,4 @@
-package com.emotionstracker.api
+package com.emotionstracker.api.endpoints
 
 import com.emotionstracker.api.importer.googledrive.GoogleDriveClient
 import com.google.api.services.drive.model.File
@@ -16,14 +16,8 @@ class DriveEndpoint(val googleDriveClient: GoogleDriveClient) {
     @GetMapping
     fun getFiles(): ResponseEntity<List<File>> = ResponseEntity.ok(googleDriveClient.listFiles())
 
-    @GetMapping("/add")
-    fun createFile(): ResponseEntity<String> {
-        googleDriveClient.addFile()
-        return ResponseEntity.ok("success")
-    }
-
     @GetMapping("/{fileId}")
-    fun createFile(@PathVariable fileId: String): ResponseEntity<String> {
+    fun getFile(@PathVariable fileId: String): ResponseEntity<String> {
         return ResponseEntity.ok(googleDriveClient.getFile(fileId).toString())
     }
 }

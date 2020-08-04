@@ -1,4 +1,4 @@
-package com.emotionstracker.api
+package com.emotionstracker.api.endpoints
 
 import com.emotionstracker.api.importer.ImportScheduler
 import org.springframework.http.ResponseEntity

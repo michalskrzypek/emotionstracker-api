@@ -1,7 +1,8 @@
-package com.emotionstracker.api
+package com.emotionstracker.api.endpoints
 
 import com.emotionstracker.api.domain.EmotionRecord
 import com.emotionstracker.api.service.EmotionRecordService
+import org.springframework.http.MediaType
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,6 +14,6 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/records")
 class EmotionRecordsEndpoint(val emotionRecordService: EmotionRecordService) {
 
-    @GetMapping("/{email}")
+    @GetMapping(value = ["/{email}"], produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getRecordsForUser(@PathVariable email: String): ResponseEntity<List<EmotionRecord>> = ResponseEntity.ok(emotionRecordService.getAllForUser(email))
 }

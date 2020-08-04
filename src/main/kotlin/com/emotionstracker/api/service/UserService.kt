@@ -9,6 +9,6 @@ import org.springframework.stereotype.Service
 class UserService(private val userRepository: UserRepository) {
 
     fun getByEmail(email: String): User = userRepository.findByEmail(email) ?: throw UserNotFoundException(email)
-    fun save(user: User): User = userRepository.save(user)
 
+    fun save(user: User): User = userRepository.save(user)
 }
